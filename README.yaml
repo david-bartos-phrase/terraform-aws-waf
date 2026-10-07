@@ -88,6 +88,34 @@ usage: |-
   For automated tests of the complete example using [bats](https://github.com/bats-core/bats-core) and [Terratest](https://github.com/gruntwork-io/terratest)
   (which tests and deploys the example on AWS), see [test](test).
 
+  `association_config` optionally sets request body inspection limits on the native Web ACL.
+  Its `request_body` map accepts `api_gateway`, `app_runner_service`, `cloudfront`,
+  `cognito_user_pool`, and `verified_access_instance` keys. Each entry sets
+  `default_size_inspection_limit` to `KB_16`, `KB_32`, `KB_48`, or `KB_64`.
+  Null (the default) or an empty map emits no association configuration and preserves service defaults.
+  Inspection beyond 16 KB incurs additional AWS WAF charges. Application Load Balancer's
+  request body inspection limit is fixed at 8 KB and cannot be configured here.
+
+  For example, a CloudFront Web ACL (`scope = "CLOUDFRONT"`, AWS provider in `us-east-1`)
+  can set:
+
+  ```hcl
+  association_config = {
+    request_body = {
+      cloudfront = { default_size_inspection_limit = "KB_32" }
+    }
+  }
+  ```
+
+  This API is an unreleased contribution on this branch; it is not available in Cloud Posse
+  v1.18.1. Downstream consumers pinned to v1.18.1 must keep that pin and omit this input
+  until a release containing the change is reviewed and adopted.
+
+  Offline native-resource regression tests are in `tests/association_config.tftest.hcl`.
+  After installing the module and provider dependencies, run `tofu test -filter=tests/association_config.tftest.hcl`
+  with an OpenTofu version supporting `mock_provider`. All runs use `command = plan`
+  and a mocked AWS provider; they do not deploy resources.
+
   ```hcl
   module "label" {
     source = "cloudposse/label/null"

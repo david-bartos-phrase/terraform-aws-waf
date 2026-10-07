@@ -5,6 +5,8 @@ provider "aws" {
 module "waf" {
   source = "../.."
 
+  association_config = var.association_config
+
   visibility_config = {
     cloudwatch_metrics_enabled = false
     metric_name                = "rules-example-metric"
