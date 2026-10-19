@@ -5,7 +5,11 @@ provider "aws" {
 module "waf" {
   source = "../.."
 
-  association_config = var.association_config
+  association_config = {
+    request_body = {
+      api_gateway = { default_size_inspection_limit = "KB_16" }
+    }
+  }
 
   visibility_config = {
     cloudwatch_metrics_enabled = false

@@ -76,15 +76,6 @@ association_config = {
 }
 ```
 
-This API is an unreleased contribution on this branch; it is not available in Cloud Posse
-v1.18.1. Downstream consumers pinned to v1.18.1 must keep that pin and omit this input
-until a release containing the change is reviewed and adopted.
-
-Offline native-resource regression tests are in `tests/association_config.tftest.hcl`.
-After installing the module and provider dependencies, run `tofu test -filter=tests/association_config.tftest.hcl`
-with an OpenTofu version supporting `mock_provider`. All runs use `command = plan`
-and a mocked AWS provider; they do not deploy resources.
-
 ```hcl
 module "label" {
   source = "cloudposse/label/null"
